@@ -1,9 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:todo/UI/myTheme.dart';
+import 'package:todo/myTheme.dart';
 import 'package:todo/UI/settings/settingsTab.dart';
 import 'package:todo/UI/tasks_list/taskBottomSheet.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../tasks_list/tasksTab.dart';
 
@@ -22,16 +23,16 @@ class _homeScreenState extends State<homeScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          "Todoly",
+           AppLocalizations.of(context)!.appTitle,
           style: GoogleFonts.oswald(
               textStyle: Theme.of(context).textTheme.headline5?.copyWith(
-                  color: Colors.black,
                   fontWeight: FontWeight.w600,
                   fontSize: 40)),
         ),
         centerTitle: true,
       ),
       floatingActionButton: FloatingActionButton(
+        elevation: 0,
         onPressed: () {
           showMyBottomSheet();
         },

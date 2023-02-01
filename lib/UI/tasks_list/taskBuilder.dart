@@ -1,9 +1,22 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:todo/UI/myTheme.dart';
+import 'package:todo/UI/home/homeScreen.dart';
+import 'package:todo/myTheme.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:todo/firebase/myDataBase.dart';
+import 'package:todo/utils/dialogUtils.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-class taskBuilder extends StatelessWidget {
+import '../../firebase/Task.dart';
+
+class taskBuilder extends StatefulWidget {
+  Task task;
+  taskBuilder(this.task);
+
+  @override
+  State<taskBuilder> createState() => _taskBuilderState();
+}
+
+class _taskBuilderState extends State<taskBuilder> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -18,10 +31,12 @@ class taskBuilder extends StatelessWidget {
           extentRatio: .2,
           children: [
             SlidableAction(
-              onPressed: (context) {},
+              onPressed: (context) {
+                deleteTask();
+              },
               icon: Icons.delete,
               foregroundColor: Colors.white,
-              label: "Delete",
+              label: AppLocalizations.of(context)!.delete,
               backgroundColor: Colors.red,
               borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(18),
@@ -58,11 +73,11 @@ class taskBuilder extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "First todo",
+                          widget.task.title,
                           style: Theme.of(context).textTheme.headline5,
                         ),
                         Text(
-                          "Description",
+                          widget.task.description,
                           style: Theme.of(context)
                               .textTheme
                               .headline6
@@ -74,12 +89,17 @@ class taskBuilder extends StatelessWidget {
                     ),
                   ),
                 ),
-                Container(
-                  padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                  child: Icon(Icons.check, color: Colors.white),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                    color: myTheme.teal,
+                InkWell(
+                  onTap: () {
+                    TaskDone();
+                  },
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    child: Icon(Icons.check, color: Colors.white),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12),
+                      color: myTheme.teal,
+                    ),
                   ),
                 ),
               ],
@@ -88,5 +108,58 @@ class taskBuilder extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void deleteTask() {
+    dialogUtils.messageDialog(
+      context,
+      AppLocalizations.of(context)!.areYouSure,
+      posActionTitle: AppLocalizations.of(context)!.yes,
+      posAction: () {
+        dialogUtils.showWaitingDialog(context, "Deleting task...");
+        Navigator.pop(context);
+        myDataBase.deleteTask(widget.task);
+        showDialog(context: context, builder: (context) {
+          return AlertDialog(
+            content: Text(AppLocalizations.of(context)!.taskWasDeleted),
+            actions: [
+            TextButton(onPressed: () => Navigator.pop(context), child: Text(AppLocalizations.of(context)!.ok)),
+            TextButton(onPressed: (){
+              Navigator.pop(context);
+              myDataBase.insertTask(widget.task);
+            }, child: Text(AppLocalizations.of(context)!.undo)),
+          ],);
+        },);
+      },
+      negActionTitle: AppLocalizations.of(context)!.cancel,
+      negAction: () {
+        Navigator.maybePop(context);
+      },
+    );
+    setState(() {});
+  }
+  void TaskDone() {
+    dialogUtils.messageDialog(
+      context,
+      AppLocalizations.of(context)!.haveYouDone,
+      posActionTitle: AppLocalizations.of(context)!.yes,
+      posAction: () {
+        dialogUtils.showWaitingDialog(context, "Deleting task...");
+        myDataBase.deleteTask(widget.task);
+        Navigator.pop(context);
+        showDialog(context: context, builder: (context) {
+          return AlertDialog(
+            content: Text(AppLocalizations.of(context)!.greatJob),
+            actions: [
+              TextButton(onPressed: () => Navigator.pop(context), child: Text(AppLocalizations.of(context)!.ok)),
+            ],);
+        },);
+      },
+      negActionTitle: AppLocalizations.of(context)!.cancel,
+      negAction: () {
+        Navigator.maybePop(context);
+      },
+    );
+    setState(() {});
   }
 }
