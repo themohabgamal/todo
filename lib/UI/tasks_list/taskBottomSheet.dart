@@ -126,7 +126,7 @@ class _taskBottomSheetBuilderState extends State<taskBottomSheetBuilder> {
     });
   }
 
-  void insertTask() {
+  void insertTask() async{
     // validate
     if (formKey.currentState?.validate() == false) {
       return;
@@ -134,7 +134,7 @@ class _taskBottomSheetBuilderState extends State<taskBottomSheetBuilder> {
     // insert task into database
     Task task=Task( title: titleController.text, description: descController.text, dateTime: selectedDate);
     dialogUtils.showWaitingDialog(context,AppLocalizations.of(context)!.addingTask);
-     myDataBase.insertTask(task);
+    await myDataBase.insertTask(task);
     dialogUtils.endWaitingDialog(context);
     dialogUtils.messageDialog(context,AppLocalizations.of(context)!.taskWasAdded,posActionTitle: "Ok",posAction: () {
       Navigator.pop(context);

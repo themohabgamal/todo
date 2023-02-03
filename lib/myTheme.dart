@@ -47,6 +47,7 @@ class myTheme {
 //  -------------------------------------------- dark theme-------------------------------------------
   static final darkTheme = ThemeData(
       bottomSheetTheme: BottomSheetThemeData(
+
         backgroundColor: dark2,
           shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.only(

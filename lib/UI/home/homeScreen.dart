@@ -23,7 +23,7 @@ class _homeScreenState extends State<homeScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-           AppLocalizations.of(context)!.appTitle,
+           "Todoly",
           style: GoogleFonts.oswald(
               textStyle: Theme.of(context).textTheme.headline5?.copyWith(
                   fontWeight: FontWeight.w600,
@@ -69,7 +69,7 @@ class _homeScreenState extends State<homeScreen> {
 
   void showMyBottomSheet() {
     showModalBottomSheet(context: context, builder: (context) {
-      return taskBottomSheetBuilder();
+      return Wrap(children: [taskBottomSheetBuilder()],);
     },);
   }
 }
