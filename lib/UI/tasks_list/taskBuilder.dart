@@ -117,18 +117,17 @@ class _taskBuilderState extends State<taskBuilder> {
       posActionTitle: AppLocalizations.of(context)!.yes,
       posAction: () {
         dialogUtils.showWaitingDialog(context, "Deleting task...");
+         myDataBase.deleteTask(widget.task);
         Navigator.pop(context);
-        myDataBase.deleteTask(widget.task);
         showDialog(context: context, builder: (context) {
           return AlertDialog(
             content: Text(AppLocalizations.of(context)!.taskWasDeleted),
             actions: [
-            TextButton(onPressed: () => Navigator.pop(context), child: Text(AppLocalizations.of(context)!.ok)),
-            TextButton(onPressed: (){
-              Navigator.pop(context);
-              myDataBase.insertTask(widget.task);
-            }, child: Text(AppLocalizations.of(context)!.undo)),
-          ],);
+              TextButton(onPressed: () => Navigator.pop(context), child: Text(AppLocalizations.of(context)!.ok)),
+              TextButton(onPressed: () { Navigator.pop(context);
+                myDataBase.insertTask(widget.task);
+                }, child: Text(AppLocalizations.of(context)!.undo)),
+            ],);
         },);
       },
       negActionTitle: AppLocalizations.of(context)!.cancel,
